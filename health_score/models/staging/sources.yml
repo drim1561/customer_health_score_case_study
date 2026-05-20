@@ -1,0 +1,26 @@
+version: 2
+
+# Sources tell dbt about tables that already exist in the warehouse
+# and were NOT created by dbt itself (raw/seed data, external loads, etc.).
+#
+# {{ source('raw', 'accounts') }} compiles to HEALTH_SCORE.DEV.accounts
+# and gives dbt the dependency graph without needing the CSV files in git.
+#
+# This is the correct pattern for production data that arrives via
+# a pipeline (EL tool, dbt seed run externally, etc.).
+
+sources:
+  - name: raw
+    database: HEALTH_SCORE
+    schema: DEV
+    description: Raw seed tables loaded into Snowflake from the CSV source files.
+
+    tables:
+      - name: accounts
+        description: Salesforce account dimensions. One row per account.
+
+      - name: subscriptions
+        description: Active product subscriptions with ARR. One row per account-product.
+
+      - name: submissions
+        description: Raw submission events. One row per submission event. ~433k rows.

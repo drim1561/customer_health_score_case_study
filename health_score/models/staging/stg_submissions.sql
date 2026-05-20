@@ -3,7 +3,7 @@
 
 with source as (
 
-    select * from {{ ref('submissions') }}
+    select * from {{ source('raw', 'submissions') }}
 
 ),
 

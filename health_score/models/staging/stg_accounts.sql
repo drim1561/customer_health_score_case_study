@@ -8,7 +8,7 @@
 
 with source as (
 
-    select * from {{ ref('accounts') }}
+    select * from {{ source('raw', 'accounts') }}
 
 ),
 
