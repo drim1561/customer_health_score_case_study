@@ -11,6 +11,7 @@ version: 2
 
 sources:
   - name: raw
+    database: HEALTH_SCORE
     schema: DEV
     description: Raw seed tables loaded into Snowflake from the CSV source files.
 
