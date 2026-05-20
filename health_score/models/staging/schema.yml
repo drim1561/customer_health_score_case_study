@@ -62,8 +62,9 @@ models:
           - relationships:
               # Verifies every account_id in subscriptions exists in stg_accounts.
               # This is a foreign key integrity check.
-              to: ref('stg_accounts')
-              field: account_id
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
 
       - name: product
         description: One of the three products sold.
@@ -94,8 +95,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_accounts')
-              field: account_id
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
 
       - name: user_id
         description: Stable per account-product. Format USR-{acct}-{product}-{seq}.
