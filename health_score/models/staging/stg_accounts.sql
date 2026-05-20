@@ -1,9 +1,9 @@
 -- Cleans the raw accounts seed table.
 -- Fixes division casing, fills missing regions, excludes null account IDs.
 --
--- {{ ref('accounts') }} is dbt's way of referencing another model or seed.
--- Using ref() instead of a hardcoded table name means dbt:
---   1. Knows the dependency order (builds this after the seed)
+-- source() tells dbt where to find raw tables that already exist in the warehouse.
+-- Using source() instead of a hardcoded table name means dbt:
+--   1. Knows the dependency order (builds this after the source is available)
 --   2. Automatically uses the right database/schema for any environment
 
 with source as (
