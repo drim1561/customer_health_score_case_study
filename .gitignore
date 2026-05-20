@@ -1,0 +1,15 @@
+# Scripts with hardcoded credentials — never commit
+setup_snowflake.py
+investigate_dupes.py
+
+# Derived outputs
+customer_health_score.csv
+
+# Claude Code internal files
+.claude/
+
+# Editor
+.vscode/
+
+# dbt logs at root level
+logs/

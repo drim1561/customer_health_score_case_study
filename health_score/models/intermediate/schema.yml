@@ -1,0 +1,64 @@
+version: 2
+
+models:
+  - name: int_account_dimensions
+    description: >
+      One row per account combining Salesforce metadata with subscription
+      summaries (total ARR, product count). Spine for all intermediate joins.
+    columns:
+      - name: account_id
+        description: Primary key — one row per account.
+        tests:
+          - unique
+          - not_null
+
+      - name: total_arr
+        description: Sum of arr_usd across all active subscriptions. 0 for accounts with no subscriptions.
+        tests:
+          - not_null
+
+      - name: products_subscribed
+        description: Count of distinct products with active subscriptions. 0 if none.
+        tests:
+          - not_null
+
+  - name: int_period_metrics
+    description: >
+      Submission and MAU counts per account for the recent (Q2 2025) and prior
+      (Q1 2025) windows, plus last submission date and days since last submission.
+    columns:
+      - name: account_id
+        description: Primary key — one row per account that has any submission history.
+        tests:
+          - unique
+          - not_null
+
+      - name: recent_submissions
+        description: Total submissions in Apr–Jun 2025.
+        tests:
+          - not_null
+
+      - name: recent_mau
+        description: Unique users in Apr–Jun 2025 (MAU proxy).
+        tests:
+          - not_null
+
+  - name: int_segment_benchmarks
+    description: >
+      Median submissions-per-MAU per division+segment peer group.
+      Used to score each account relative to its peers (Component 5).
+    columns:
+      - name: division
+        description: Part of the composite primary key.
+        tests:
+          - not_null
+
+      - name: segment
+        description: Part of the composite primary key.
+        tests:
+          - not_null
+
+      - name: median_submissions_per_mau
+        description: Median submissions per active user within this division+segment group.
+        tests:
+          - not_null

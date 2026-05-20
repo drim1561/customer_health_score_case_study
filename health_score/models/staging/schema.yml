@@ -1,0 +1,116 @@
+version: 2
+
+# Schema files serve two purposes in dbt:
+#   1. Tests  — dbt generates and runs SQL to validate each assertion
+#   2. Docs   — column descriptions appear in dbt docs / dbt Explorer
+#
+# GENERIC TEST TYPES USED HERE:
+#   unique          → every value in the column appears only once
+#   not_null        → no NULLs in the column
+#   accepted_values → column only contains values in the provided list
+#   relationships   → every value in a column exists in another model's column
+#                     (foreign key check)
+
+models:
+  - name: stg_accounts
+    description: >
+      Cleaned Salesforce account records. One row per account.
+      Division casing normalized; missing regions filled with 'Unknown'.
+    columns:
+      - name: account_id
+        description: Primary key. Format ACC-XXXX.
+        tests:
+          - unique
+          - not_null
+
+      - name: division
+        description: Either 'Higher Ed' or 'K12'. Normalized from messy source.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Higher Ed', 'K12']
+
+      - name: region
+        description: NAM, EMEA, APAC, LATAM, or Unknown. Never null after coalesce.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['NAM', 'EMEA', 'APAC', 'LATAM', 'Unknown']
+
+      - name: renewal_date
+        description: Next contract renewal date.
+        tests:
+          - not_null
+
+  - name: stg_subscriptions
+    description: >
+      Active subscriptions with positive ARR. Orphan rows (no matching account)
+      and $0-ARR rows excluded.
+    columns:
+      - name: subscription_id
+        description: Primary key. Format SUB-XXXXX.
+        tests:
+          - unique
+          - not_null
+
+      - name: account_id
+        description: Foreign key to stg_accounts.
+        tests:
+          - not_null
+          - relationships:
+              # Verifies every account_id in subscriptions exists in stg_accounts.
+              # This is a foreign key integrity check.
+              to: ref('stg_accounts')
+              field: account_id
+
+      - name: product
+        description: One of the three products sold.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Originality', 'Feedback Studio', 'Gradescope']
+
+      - name: arr_usd
+        description: Annual Recurring Revenue in USD. Always positive after cleaning.
+        tests:
+          - not_null
+
+  - name: stg_submissions
+    description: >
+      Cleaned submission events. Ghost-account rows excluded.
+      Date range 2024-01-01 through 2025-06-30.
+    columns:
+      - name: submission_id
+        description: Primary key. Format SBM-XXXXXXXX.
+        tests:
+          - unique
+          - not_null
+
+      - name: account_id
+        description: Foreign key to stg_accounts.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_accounts')
+              field: account_id
+
+      - name: user_id
+        description: Stable per account-product. Format USR-{acct}-{product}-{seq}.
+        tests:
+          - not_null
+
+      - name: product
+        description: Product that generated the submission.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Originality', 'Feedback Studio', 'Gradescope']
+
+      - name: submission_date
+        description: Day of submission (UTC).
+        tests:
+          - not_null

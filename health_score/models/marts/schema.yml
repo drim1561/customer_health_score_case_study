@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: customer_health_score
+    description: >
+      Final health score table. One row per account, materialized as a table
+      in Snowflake for direct CSM querying. Composite score (0–100) is a
+      weighted average of five components: submission trend, MAU trend,
+      recency, product adoption, and relative peer activity.
+    columns:
+      - name: account_id
+        description: Primary key — one row per account.
+        tests:
+          - unique
+          - not_null
+
+      - name: composite_health_score
+        description: Weighted composite score from 0 (worst) to 100 (best).
+        tests:
+          - not_null
+
+      - name: health_tier
+        description: Categorical bucket derived from composite_health_score.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Healthy', 'At Risk', 'Critical']
+
+      - name: renewal_urgency
+        description: Combines health score with days_to_renewal to flag CSM priority.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Urgent', 'Watch', 'Monitor']
+
+      - name: submission_trend_score
+        description: Component 1 score (0–100). Weight 30%.
+        tests:
+          - not_null
+
+      - name: mau_trend_score
+        description: Component 2 score (0–100). Weight 25%.
+        tests:
+          - not_null
+
+      - name: recency_score
+        description: Component 3 score (0–100). Weight 20%.
+        tests:
+          - not_null
+
+      - name: product_adoption_score
+        description: Component 4 score (0–100). Weight 15%.
+        tests:
+          - not_null
+
+      - name: relative_activity_score
+        description: Component 5 score (0–100). Weight 10%. Peer benchmark.
+        tests:
+          - not_null
+
+      - name: peer_percentile_rank
+        description: >
+          Rank (0–100) within division+segment peer group. 0 = bottom of peers.
+          Use this to prioritize CSM outreach within the Healthy tier.
+        tests:
+          - not_null

@@ -1,0 +1,7 @@
+
+target/
+dbt_packages/
+logs/
+
+# Seed CSVs are duplicates of /data — no need to track twice
+seeds/
