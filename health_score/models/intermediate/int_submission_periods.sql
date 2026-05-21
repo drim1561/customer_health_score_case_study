@@ -14,9 +14,12 @@ select
     submission_date,
 
     case
-        when submission_date between '2025-04-01'::date and '2025-06-30'::date then 'recent'
-        when submission_date between '2025-01-01'::date and '2025-03-31'::date then 'prior'
-        else null
+        when
+            submission_date between '2025-04-01'::date and '2025-06-30'::date
+            then 'recent'
+        when
+            submission_date between '2025-01-01'::date and '2025-03-31'::date
+            then 'prior'
     end as period
 
 from {{ ref('stg_submissions') }}

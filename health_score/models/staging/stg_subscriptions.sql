@@ -24,11 +24,11 @@ cleaned as (
         s.product,
         s.arr_usd,
         s.term_start_date::date as term_start_date,
-        s.term_end_date::date   as term_end_date,
+        s.term_end_date::date as term_end_date,
         s.status
 
-    from source s
-    inner join accounts a on s.account_id = a.account_id
+    from source as s
+    inner join accounts as a on s.account_id = a.account_id
 
     -- Exclude $0 ARR rows (pilots / comp'd accounts).
     -- Including them would inflate product counts and skew adoption scores.

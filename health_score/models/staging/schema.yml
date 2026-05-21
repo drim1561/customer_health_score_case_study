@@ -29,7 +29,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['Higher Ed', 'K12']
+                values: ["Higher Ed", "K12"]
 
       - name: region
         description: NAM, EMEA, APAC, LATAM, or Unknown. Never null after coalesce.
@@ -37,7 +37,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['NAM', 'EMEA', 'APAC', 'LATAM', 'Unknown']
+                values: ["NAM", "EMEA", "APAC", "LATAM", "Unknown"]
 
       - name: renewal_date
         description: Next contract renewal date.
@@ -72,7 +72,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['Originality', 'Feedback Studio', 'Gradescope']
+                values: ["Originality", "Feedback Studio", "Gradescope"]
 
       - name: arr_usd
         description: Annual Recurring Revenue in USD. Always positive after cleaning.
@@ -110,7 +110,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['Originality', 'Feedback Studio', 'Gradescope']
+                values: ["Originality", "Feedback Studio", "Gradescope"]
 
       - name: submission_date
         description: Day of submission (UTC).

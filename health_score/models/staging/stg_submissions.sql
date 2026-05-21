@@ -17,15 +17,15 @@ cleaned as (
 
     select
         sm.submission_id,
-        sm.submission_date::date        as submission_date,
+        sm.submission_date::date as submission_date,
         sm.submission_timestamp::timestamp_ntz as submission_timestamp,
         sm.account_id,
         sm.product,
         sm.user_id
 
-    from source sm
+    from source as sm
     -- INNER JOIN silently drops the 8 ghost-account submissions
-    inner join accounts a on sm.account_id = a.account_id
+    inner join accounts as a on sm.account_id = a.account_id
 
     -- QUALIFY is Snowflake syntax for filtering on a window function result
     -- without needing a subquery. ROW_NUMBER() assigns 1 to the first row
