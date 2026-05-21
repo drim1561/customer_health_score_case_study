@@ -12,8 +12,11 @@
 -- TIERS: Healthy >= 70 | At Risk 40-69 | Critical < 40
 with
 dimensions as (select * from {{ ref("int_account_dimensions") }}),
+
 metrics as (select * from {{ ref("int_period_metrics") }}),
+
 benchmarks as (select * from {{ ref("int_segment_benchmarks") }}),
+
 component_scores as (
 
     select
