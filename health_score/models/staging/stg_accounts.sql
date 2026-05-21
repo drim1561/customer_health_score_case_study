@@ -19,20 +19,20 @@ cleaned as (
         account_name,
 
         -- Normalize the three division variants to exactly two values
-        case
-            when lower(division) in ('higher ed', 'highered') then 'Higher Ed'
-            when lower(division) = 'k12'                      then 'K12'
-            else division
-        end                                          as division,
+        segment,
 
         -- 6 accounts have null region; coalesce keeps them in rollups
-        coalesce(region, 'Unknown')                  as region,
-
-        segment,
         country,
-        customer_since::date                         as customer_since,
+
+        customer_since::date as customer_since,
         csm_owner,
-        renewal_date::date                           as renewal_date
+        renewal_date::date as renewal_date,
+        case
+            when lower(division) in ('higher ed', 'highered') then 'Higher Ed'
+            when lower(division) = 'k12' then 'K12'
+            else division
+        end as division,
+        coalesce(region, 'Unknown') as region
 
     from source
     where account_id is not null

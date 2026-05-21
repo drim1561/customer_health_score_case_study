@@ -33,20 +33,24 @@ select
     p.account_id,
 
     -- Submission counts per period
-    count(case when p.period = 'recent' then 1 end)                         as recent_submissions,
-    count(case when p.period = 'prior'  then 1 end)                         as prior_submissions,
+    r.last_submission_date,
+    count(case when p.period = 'recent' then 1 end) as recent_submissions,
 
     -- Unique active users (MAU proxy) per period
-    count(distinct case when p.period = 'recent' then p.user_id  end)       as recent_mau,
-    count(distinct case when p.period = 'prior'  then p.user_id  end)       as prior_mau,
+    count(case when p.period = 'prior' then 1 end) as prior_submissions,
+    count(distinct case when p.period = 'recent' then p.user_id end)
+        as recent_mau,
 
     -- Products with at least one submission in the recent window
-    count(distinct case when p.period = 'recent' then p.product  end)       as products_active_recent,
+    count(distinct case when p.period = 'prior' then p.user_id end)
+        as prior_mau,
 
     -- Recency fields
-    r.last_submission_date,
-    datediff('day', r.last_submission_date, '2025-06-30'::date)             as days_since_last_submission
+    count(distinct case when p.period = 'recent' then p.product end)
+        as products_active_recent,
+    datediff('day', r.last_submission_date, '2025-06-30'::date)
+        as days_since_last_submission
 
-from periods p
-left join recency r on p.account_id = r.account_id
+from periods as p
+left join recency as r on p.account_id = r.account_id
 group by p.account_id, r.last_submission_date

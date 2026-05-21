@@ -24,20 +24,22 @@ with metrics as (
             else m.recent_submissions / nullif(m.recent_mau, 0)::float
         end as recent_submissions_per_mau
 
-    from {{ ref('int_period_metrics') }}   m
-    join {{ ref('int_account_dimensions') }} d using (account_id)
+    from {{ ref('int_period_metrics') }} as m
+    inner join
+        {{ ref('int_account_dimensions') }} as d
+        on m.account_id = d.account_id
 
 )
 
 select
-    division,
-    segment,
+division,
+segment,
 
-    -- PERCENTILE_CONT(0.5) is the SQL standard syntax for median.
-    -- WITHIN GROUP (ORDER BY ...) tells it which column to rank.
-    percentile_cont(0.5) within group (
-        order by recent_submissions_per_mau
-    ) as median_submissions_per_mau
+-- PERCENTILE_CONT(0.5) is the SQL standard syntax for median.
+-- WITHIN GROUP (ORDER BY ...) tells it which column to rank.
+percentile_cont(0.5) within group (
+    order by recent_submissions_per_mau
+) as median_submissions_per_mau
 
 from metrics
 group by division, segment
