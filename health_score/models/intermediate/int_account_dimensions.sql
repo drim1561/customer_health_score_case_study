@@ -1,4 +1,4 @@
--- One row per account combining Salesforce metadata with subscription summaries.
+-- One row per account combining CRM metadata with subscription summaries.
 -- This is the "spine" every other intermediate model joins back to.
 
 with accounts as (
@@ -10,8 +10,8 @@ with accounts as (
 subscription_summary as (
 
     -- Aggregate subscriptions to account level.
-    -- COUNT(DISTINCT product) tells us how many products the account pays for —
-    -- used later to compute what fraction they're actually using.
+    -- COUNT(DISTINCT product): how many products this account subscribes to.
+    -- Used later to compute what fraction they're actually using.
     select
         account_id,
         sum(arr_usd) as total_arr,

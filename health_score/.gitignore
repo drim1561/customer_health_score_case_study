@@ -5,3 +5,4 @@ logs/
 
 # Seed CSVs are duplicates of /data — no need to track twice
 seeds/
+dbt_internal_packages/
