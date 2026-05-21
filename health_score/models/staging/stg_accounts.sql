@@ -1,7 +1,7 @@
 -- Cleans the raw accounts seed table.
 -- Fixes division casing, fills missing regions, excludes null account IDs.
 --
--- source() tells dbt where to find raw tables that already exist in the warehouse.
+-- source() tells dbt where to find raw tables that exist in the warehouse.
 -- Using source() instead of a hardcoded table name means dbt:
 --   1. Knows the dependency order (builds this after the source is available)
 --   2. Automatically uses the right database/schema for any environment

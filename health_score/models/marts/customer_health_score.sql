@@ -3,7 +3,7 @@
 -- without waiting for views to recompute.
 --
 -- SCORE COMPONENTS & WEIGHTS
--- 1. Submission Trend    30%  -- per-user submission rate, recent vs prior quarter
+-- 1. Submission Trend    30%  -- submissions/user, recent vs prior quarter
 -- 2. MAU Trend           25%  -- active user count, recent vs prior quarter
 -- 3. Recency             20%  -- days since last submission
 -- 4. Product Adoption    15%  -- % of subscribed products actively used
@@ -12,8 +12,11 @@
 -- TIERS: Healthy >= 70 | At Risk 40-69 | Critical < 40
 with
 dimensions as (select * from {{ ref("int_account_dimensions") }}),
+
 metrics as (select * from {{ ref("int_period_metrics") }}),
+
 benchmarks as (select * from {{ ref("int_segment_benchmarks") }}),
+
 component_scores as (
 
     select

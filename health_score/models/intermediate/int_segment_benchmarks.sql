@@ -32,14 +32,14 @@ with metrics as (
 )
 
 select
-division,
-segment,
+    division,
+    segment,
 
--- PERCENTILE_CONT(0.5) is the SQL standard syntax for median.
--- WITHIN GROUP (ORDER BY ...) tells it which column to rank.
-percentile_cont(0.5) within group (
-    order by recent_submissions_per_mau
-) as median_submissions_per_mau
+    -- PERCENTILE_CONT(0.5) is the SQL standard syntax for median.
+    -- WITHIN GROUP (ORDER BY ...) tells it which column to rank.
+    percentile_cont(0.5) within group (
+        order by recent_submissions_per_mau
+    ) as median_submissions_per_mau
 
 from metrics
 group by division, segment

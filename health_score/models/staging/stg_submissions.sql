@@ -33,8 +33,8 @@ cleaned as (
     -- Investigation confirmed all 15 dupes are fully identical rows
     -- (same timestamp, user, account, product) — safe to deduplicate.
     qualify row_number() over (
-        partition by submission_id
-        order by submission_timestamp
+        partition by sm.submission_id
+        order by sm.submission_timestamp
     ) = 1
 
 )
