@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: stg_accounts
+    description: >
+      Cleaned Salesforce account records. One row per account.
+      Division casing normalized; missing regions filled with 'Unknown'.
+    columns:
+      - name: account_id
+        description: Primary key. Format ACC-XXXX.
+        tests:
+          - unique
+          - not_null
+
+      - name: division
+        description: Either 'Higher Ed' or 'K12'. Normalized from messy source.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["Higher Ed", "K12"]
+
+      - name: region
+        description: NAM, EMEA, APAC, LATAM, or Unknown. Never null after coalesce.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["NAM", "EMEA", "APAC", "LATAM", "Unknown"]
+
+      - name: renewal_date
+        description: Next contract renewal date.
+        tests:
+          - not_null
