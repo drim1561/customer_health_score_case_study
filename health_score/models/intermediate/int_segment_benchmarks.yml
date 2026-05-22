@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: int_segment_benchmarks
+    description: >
+      Median submissions-per-MAU per division+segment peer group.
+      Used to score each account relative to its peers (Component 5).
+    columns:
+      - name: division
+        description: Part of the composite primary key.
+        tests:
+          - not_null
+
+      - name: segment
+        description: Part of the composite primary key.
+        tests:
+          - not_null
+
+      - name: median_submissions_per_mau
+        description: Median submissions per active user within this division+segment group.
+        tests:
+          - not_null

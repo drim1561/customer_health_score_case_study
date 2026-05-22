@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: stg_submissions
+    description: >
+      Cleaned submission events. Ghost-account rows excluded.
+      Date range 2024-01-01 through 2025-06-30.
+    columns:
+      - name: submission_id
+        description: Primary key. Format SBM-XXXXXXXX.
+        tests:
+          - unique
+          - not_null
+
+      - name: account_id
+        description: Foreign key to stg_accounts.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
+
+      - name: user_id
+        description: Stable per account-product. Format USR-{acct}-{product}-{seq}.
+        tests:
+          - not_null
+
+      - name: product
+        description: Product that generated the submission.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["Originality", "Feedback Studio", "Gradescope"]
+
+      - name: submission_date
+        description: Day of submission (UTC).
+        tests:
+          - not_null

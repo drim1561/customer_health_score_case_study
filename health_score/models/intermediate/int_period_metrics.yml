@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: int_period_metrics
+    description: >
+      Submission and MAU counts per account for the recent (Q2 2025) and prior
+      (Q1 2025) windows, plus last submission date and days since last submission.
+    columns:
+      - name: account_id
+        description: Primary key — one row per account that has any submission history.
+        tests:
+          - unique
+          - not_null
+
+      - name: recent_submissions
+        description: Total submissions in Apr–Jun 2025.
+        tests:
+          - not_null
+
+      - name: recent_mau
+        description: Unique users in Apr–Jun 2025 (MAU proxy).
+        tests:
+          - not_null

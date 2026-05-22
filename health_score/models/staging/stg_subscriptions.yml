@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: stg_subscriptions
+    description: >
+      Active subscriptions with positive ARR. Orphan rows (no matching account)
+      and $0-ARR rows excluded.
+    columns:
+      - name: subscription_id
+        description: Primary key. Format SUB-XXXXX.
+        tests:
+          - unique
+          - not_null
+
+      - name: account_id
+        description: Foreign key to stg_accounts.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_accounts')
+                field: account_id
+
+      - name: product
+        description: One of the three products sold.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["Originality", "Feedback Studio", "Gradescope"]
+
+      - name: arr_usd
+        description: Annual Recurring Revenue in USD. Always positive after cleaning.
+        tests:
+          - not_null

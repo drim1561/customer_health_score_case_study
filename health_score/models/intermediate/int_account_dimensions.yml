@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: int_account_dimensions
+    description: >
+      One row per account combining Salesforce metadata with subscription
+      summaries (total ARR, product count). Spine for all intermediate joins.
+    columns:
+      - name: account_id
+        description: Primary key — one row per account.
+        tests:
+          - unique
+          - not_null
+
+      - name: total_arr
+        description: Sum of arr_usd across all active subscriptions. 0 for accounts with no subscriptions.
+        tests:
+          - not_null
+
+      - name: products_subscribed
+        description: Count of distinct products with active subscriptions. 0 if none.
+        tests:
+          - not_null
