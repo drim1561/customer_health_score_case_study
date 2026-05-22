@@ -97,6 +97,8 @@ The `customer_health_score` table exposes:
 | `peer_percentile_rank` | Rank within division+segment peer group |
 | `renewal_urgency` | Urgent / Watch / Monitor |
 
+<img width="2042" height="586" alt="image" src="https://github.com/user-attachments/assets/663d7222-c55f-49e4-9666-b10ad4f3e2d4" />
+
 ---
 
 ## Running the Project
