@@ -108,4 +108,4 @@ models:
       - name: arr_at_risk
         description: >
           Total ARR for this account if it falls into the Watch or Urgent renewal
-          urgency tier; 0 otherwise. Used to quantify financial exposure. 
+          urgency tier; 0 otherwise. Used to quantify financial exposure.
