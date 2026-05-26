@@ -1,8 +1,8 @@
--- Singular test: every 'Urgent' renewal account must have a 'Critical' health tier.
+-- Singular test: every 'Urgent' account must have a 'Critical' health tier.
 --
--- By definition: Urgent = renewal within 90 days AND composite_score < 40 (Critical).
--- If an account is flagged Urgent but not Critical, the tier/urgency logic has
--- diverged — this test catches that inconsistency before CSMs act on bad data.
+-- Urgent = renewal within 90 days AND composite_score < 40 (Critical).
+-- If an account is Urgent but not Critical, tier/urgency logic has diverged
+-- — this test catches that before CSMs act on bad data.
 
 select
     account_id,

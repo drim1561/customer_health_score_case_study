@@ -17,6 +17,8 @@ metrics as (select * from {{ ref("int_period_metrics") }}),
 
 benchmarks as (select * from {{ ref("int_segment_benchmarks") }}),
 
+growth as (select * from {{ ref("int_user_growth_accounting") }}),
+
 component_scores as (
 
     select
@@ -41,6 +43,13 @@ component_scores as (
         coalesce(m.recent_mau, 0) as recent_mau,
         coalesce(m.prior_mau, 0) as prior_mau,
         coalesce(m.products_active_recent, 0) as products_active_recent,
+
+        -- Growth accounting (passed through; scored in with_tiers)
+        coalesce(g.retained_users, 0) as retained_users,
+        coalesce(g.new_users, 0) as new_users,
+        coalesce(g.resurrected_users, 0) as resurrected_users,
+        coalesce(g.churned_users, 0) as churned_users,
+        coalesce(g.user_churn_rate, 0) as user_churn_rate,
 
         -- ── COMPONENT 1: SUBMISSION TREND SCORE (weight 30%) ──────────────
         -- Compares submissions-per-MAU between quarters.
@@ -162,6 +171,7 @@ component_scores as (
 
     from dimensions as d
     left join metrics as m on d.account_id = m.account_id
+    left join growth as g on d.account_id = g.account_id
     left join
         benchmarks as b
         on d.division = b.division and d.segment = b.segment
@@ -264,7 +274,43 @@ with_tiers as (
                 )
             * 100,
             0
-        ) as peer_percentile_rank
+        ) as peer_percentile_rank,
+
+        -- ── MAU BENCHMARK STATUS ───────────────────────────────────────────
+        -- Traffic-light: MAU growth relative to the prior quarter.
+        -- Green: meaningful growth (≥10% above prior MAU)
+        -- Yellow: stable or slight growth (same or up, but under the 1.1× bar)
+        -- Red: user decline (fewer active users than last quarter)
+        -- New: no prior-quarter baseline to compare against
+        case
+            when coalesce(prior_mau, 0) = 0
+                then 'New'
+            when recent_mau >= prior_mau * 1.1
+                then 'Green'
+            when recent_mau >= prior_mau
+                then 'Yellow'
+            else 'Red'
+        end as mau_benchmark_status,
+
+        -- ── ARR TIER ──────────────────────────────────────────────────────
+        -- Segments accounts by revenue size so CSMs and leadership can
+        -- quickly filter by customer importance in dashboards.
+        -- Thresholds calibrated to this dataset's ARR distribution.
+        case
+            when total_arr > 50000
+                then 'Enterprise'
+            when total_arr > 15000
+                then 'Mid-Market'
+            else 'SMB'
+        end as arr_tier,
+
+        -- ── NEW USER RATE ─────────────────────────────────────────────────
+        -- What fraction of this quarter's active users are brand-new?
+        -- High rate with stable MAU can signal churn masked by acquisition.
+        round(
+            new_users / nullif(recent_mau, 0)::float,
+            3
+        ) as new_user_rate
 
     from composite
 
@@ -306,6 +352,23 @@ select
     health_tier,
     peer_percentile_rank,
 
+    -- ── ENHANCED METRICS ──────────────────────────────────────────────────
+    -- User growth accounting — why MAU went up or down
+    retained_users,
+    new_users,
+    resurrected_users,
+    churned_users,
+    user_churn_rate,
+    new_user_rate,
+
+    -- MAU traffic-light benchmark
+    mau_benchmark_status,
+
+    -- Revenue segmentation
+    arr_tier,
+
+    -- Calculations last (ST06: simple refs before expressions)
+
     -- Renewal urgency: combines health score with time-to-renewal
     case
         when days_to_renewal <= 90 and composite_health_score < 40
@@ -313,7 +376,21 @@ select
         when days_to_renewal <= 180 and composite_health_score < 70
             then 'Watch'
         else 'Monitor'
-    end as renewal_urgency
+    end as renewal_urgency,
+
+    -- ARR at risk: total ARR for Watch/Urgent accounts, 0 for Monitor.
+    -- Lets leadership sort by financial impact, not just account count.
+    case
+        when
+            (
+                days_to_renewal <= 90 and composite_health_score < 40
+            )
+            or (
+                days_to_renewal <= 180 and composite_health_score < 70
+            )
+            then total_arr
+        else 0
+    end as arr_at_risk
 
 from with_tiers
 order by composite_health_score asc, peer_percentile_rank asc

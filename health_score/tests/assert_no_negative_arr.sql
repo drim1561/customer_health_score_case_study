@@ -1,6 +1,6 @@
 -- Singular test: no account should have negative total ARR.
 -- A negative value would indicate a data pipeline error in the
--- subscriptions source (e.g. a credit memo row being treated as a subscription).
+-- subscriptions source (e.g. a credit memo treated as a subscription).
 
 select
     account_id,

@@ -66,3 +66,46 @@ models:
           Use this to prioritize CSM outreach within the Healthy tier.
         tests:
           - not_null
+
+      - name: retained_users
+        description: Users active in both Q1 and Q2 2025.
+
+      - name: new_users
+        description: Users whose first-ever submission was in Q2 2025.
+
+      - name: resurrected_users
+        description: Users active in Q2 who were absent in Q1 but had pre-2025 history.
+
+      - name: churned_users
+        description: Users active in Q1 2025 who did not submit in Q2 2025.
+
+      - name: user_churn_rate
+        description: >
+          Share of prior-period users who churned in Q2. Range 0–1.
+
+      - name: new_user_rate
+        description: >
+          Share of Q2 MAU who are brand-new users. High rate with flat MAU
+          can indicate churn being masked by new acquisition.
+
+      - name: mau_benchmark_status
+        description: >
+          Traffic-light MAU classification. Green = ≥10% growth vs Q1.
+          Yellow = stable (same or up, but under 1.1×). Red = user decline.
+          New = no Q1 baseline.
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Green', 'Yellow', 'Red', 'New']
+
+      - name: arr_tier
+        description: Revenue size segment. Enterprise >$50K, Mid-Market $15K–$50K, SMB <$15K.
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Enterprise', 'Mid-Market', 'SMB']
+
+      - name: arr_at_risk
+        description: >
+          Total ARR for this account if it falls into the Watch or Urgent renewal
+          urgency tier; 0 otherwise. Used to quantify financial exposure.

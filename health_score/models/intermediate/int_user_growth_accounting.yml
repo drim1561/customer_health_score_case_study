@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: int_user_growth_accounting
+    description: >
+      Decomposes each account's Q2 2025 MAU into four mutually exclusive user
+      types using the growth accounting identity:
+      recent_mau = retained + new + resurrected.
+      Churned users were active in Q1 but absent in Q2.
+    columns:
+      - name: account_id
+        description: Primary key — one row per account that has any user activity.
+        tests:
+          - unique
+          - not_null
+
+      - name: retained_users
+        description: Users active in both Q1 2025 and Q2 2025.
+
+      - name: new_users
+        description: >
+          Users whose first-ever submission falls in Q2 2025 (no prior or
+          historical activity).
+
+      - name: resurrected_users
+        description: >
+          Users active in Q2 2025 who were absent in Q1 but had activity
+          before 2025 — returned after going dormant.
+
+      - name: churned_users
+        description: Users active in Q1 2025 who did not submit anything in Q2 2025.
+
+      - name: user_churn_rate
+        description: >
+          Fraction of previously active users (retained + churned) who churned
+          in Q2. Range 0–1; null-safe (0 when no prior-period users).

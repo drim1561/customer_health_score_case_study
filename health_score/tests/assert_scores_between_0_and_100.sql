@@ -18,9 +18,9 @@ from {{ ref('customer_health_score') }}
 
 where
     -- Any score outside 0–100 is a bug in the scoring logic
-    composite_health_score    < 0 or composite_health_score    > 100
-    or submission_trend_score < 0 or submission_trend_score    > 100
-    or mau_trend_score        < 0 or mau_trend_score           > 100
-    or recency_score          < 0 or recency_score             > 100
-    or product_adoption_score < 0 or product_adoption_score    > 100
-    or relative_activity_score < 0 or relative_activity_score  > 100
+    composite_health_score < 0 or composite_health_score > 100
+    or submission_trend_score < 0 or submission_trend_score > 100
+    or mau_trend_score < 0 or mau_trend_score > 100
+    or recency_score < 0 or recency_score > 100
+    or product_adoption_score < 0 or product_adoption_score > 100
+    or relative_activity_score < 0 or relative_activity_score > 100
