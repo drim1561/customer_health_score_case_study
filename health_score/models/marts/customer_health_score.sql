@@ -277,7 +277,7 @@ with_tiers as (
         ) as peer_percentile_rank,
 
         -- ── MAU BENCHMARK STATUS ───────────────────────────────────────────
-        -- Traffic-light classification based on MAU growth vs the prior quarter.
+        -- Traffic-light: MAU growth relative to the prior quarter.
         -- Green: meaningful growth (≥10% above prior MAU)
         -- Yellow: stable or slight growth (same or up, but under the 1.1× bar)
         -- Red: user decline (fewer active users than last quarter)
@@ -376,7 +376,7 @@ select
     -- Revenue segmentation
     arr_tier,
 
-    -- ARR-weighted renewal risk: dollar amount exposed for Watch/Urgent accounts.
+    -- ARR at risk: total ARR for Watch/Urgent accounts, 0 for Monitor.
     -- Lets leadership sort by financial impact, not just account count.
     case
         when
