@@ -52,6 +52,7 @@ health_score/
       int_submission_periods.sql     # Buckets submissions into recent/prior quarters
       int_period_metrics.sql         # Submission and MAU counts per account per period
       int_segment_benchmarks.sql     # Peer median (submissions/MAU) by division+segment
+      int_user_growth_accounting.sql # Decomposes MAU into new/retained/resurrected/churned
     marts/                           # Table — queryable by CSMs
       customer_health_score.sql      # Final scored output, one row per account
   tests/
@@ -95,7 +96,16 @@ The `customer_health_score` table exposes:
 | `composite_health_score` | Final 0–100 score |
 | `health_tier` | Healthy / At Risk / Critical |
 | `peer_percentile_rank` | Rank within division+segment peer group |
+| `retained_users` | Users active in both Q1 and Q2 2025 |
+| `new_users` | Users whose first-ever submission was in Q2 2025 |
+| `resurrected_users` | Users active in Q2 who were absent in Q1 but had prior history |
+| `churned_users` | Users active in Q1 who did not submit in Q2 |
+| `user_churn_rate` | Share of prior-period users who churned in Q2 (0–1) |
+| `new_user_rate` | Share of Q2 MAU who are brand-new users |
+| `mau_benchmark_status` | Traffic-light: Green ≥1.1× prior MAU, Yellow stable, Red declining, New |
+| `arr_tier` | Enterprise >$50K, Mid-Market $15K–$50K, SMB <$15K |
 | `renewal_urgency` | Urgent / Watch / Monitor |
+| `arr_at_risk` | Total ARR for Watch/Urgent accounts; 0 for Monitor |
 
 <img width="2042" height="586" alt="image" src="https://github.com/user-attachments/assets/663d7222-c55f-49e4-9666-b10ad4f3e2d4" />
 
