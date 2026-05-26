@@ -352,15 +352,6 @@ select
     health_tier,
     peer_percentile_rank,
 
-    -- Renewal urgency: combines health score with time-to-renewal
-    case
-        when days_to_renewal <= 90 and composite_health_score < 40
-            then 'Urgent'
-        when days_to_renewal <= 180 and composite_health_score < 70
-            then 'Watch'
-        else 'Monitor'
-    end as renewal_urgency,
-
     -- ── ENHANCED METRICS ──────────────────────────────────────────────────
     -- User growth accounting — why MAU went up or down
     retained_users,
@@ -375,6 +366,17 @@ select
 
     -- Revenue segmentation
     arr_tier,
+
+    -- Calculations last (ST06: simple refs before expressions)
+
+    -- Renewal urgency: combines health score with time-to-renewal
+    case
+        when days_to_renewal <= 90 and composite_health_score < 40
+            then 'Urgent'
+        when days_to_renewal <= 180 and composite_health_score < 70
+            then 'Watch'
+        else 'Monitor'
+    end as renewal_urgency,
 
     -- ARR at risk: total ARR for Watch/Urgent accounts, 0 for Monitor.
     -- Lets leadership sort by financial impact, not just account count.
