@@ -74,6 +74,7 @@ Running `explore.py` and the ad-hoc analysis surfaced a few issues in the raw da
 - **Blank `csm_owner`** — unassigned accounts have an empty string rather than null. Treated as unassigned in the output.
 - **Duplicate submissions** — investigated in `analyses/investigate_duplicate_submissions.sql`. Duplicates exist at the `submission_id` level in a small number of cases; deduplication applied in `stg_submissions.sql`.
 - **Orphan submissions** — a small number of `submission` rows reference `account_id` values not present in `accounts`. These are excluded from scoring.
+- **Shell accounts** — 7 accounts had no subscriptions and no submission history, resulting in a composite score of 0. These were surfacing at the top of the Critical tier and the Urgent renewal bucket despite carrying no ARR and no users. The mart now excludes them, keeping only accounts with at least one subscription or any submission history. Tiers and the renewal-urgency overlay reflect only real customers.
 
 ---
 
