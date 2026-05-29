@@ -396,6 +396,7 @@ from with_tiers
 -- Exclude shell accounts: no subscription AND no submission history ever.
 -- These carry no ARR, no users, and no activity, so scoring and ranking
 -- them alongside real customers only adds noise to the at-risk list.
-where products_subscribed > 0
+where
+    products_subscribed > 0
     or days_since_last_submission is not null
 order by composite_health_score asc, peer_percentile_rank asc
