@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repo contains my solution to the BI Engineer case study. The deliverable is a **Customer Health Score** — a composite 0–100 metric that gives Customer Success Managers and leadership a systematic way to identify at-risk accounts, spot expansion candidates, and prioritize renewal conversations.
+**Customer Health Score** — a composite 0–100 metric that gives Customer Success Managers and leadership a systematic way to identify at-risk accounts, spot expansion candidates, and prioritize renewal conversations.
 
 **Platform choice:** I built this in **dbt (Snowflake)**, connected to dbt Cloud with CI/CD via GitHub. Every model change is tracked in version control, tests run on each push, and the final `customer_health_score` table is materialized in Snowflake where CSMs can query it directly.
 
