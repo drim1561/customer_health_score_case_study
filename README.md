@@ -149,3 +149,8 @@ dbt build          # runs models + tests
 
 Source data lives in `data/` as CSVs and is loaded into Snowflake via dbt seeds or an
 external process prior to running.
+
+---
+
+Built by **Daniel Rim**, Analytics Engineer / Data Engineer.
+[Portfolio](https://drim1561.github.io/) · [LinkedIn](https://www.linkedin.com/in/daniel-rim)
